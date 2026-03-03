@@ -1,0 +1,44 @@
+import type { DressItem } from '../types';
+
+const anchors = {
+  leftShoulder: 11,
+  rightShoulder: 12,
+  leftHip: 23,
+  rightHip: 24,
+};
+
+export const DRESSES: DressItem[] = [
+  {
+    id: 'ruby-a-line',
+    name: 'Ruby A-Line',
+    filePath: '/assets/dresses/ruby-a-line.png',
+    scaleFactor: 2.1,
+    yOffsetFactor: 0.1,
+    anchors,
+    torsoLengthRatio: 1,
+    minScale: 180,
+    maxScale: 520,
+  },
+  {
+    id: 'midnight-wrap',
+    name: 'Midnight Wrap',
+    filePath: '/assets/dresses/midnight-wrap.png',
+    scaleFactor: 2.0,
+    yOffsetFactor: 0.1,
+    anchors,
+    torsoLengthRatio: 1.02,
+    minScale: 180,
+    maxScale: 520,
+  },
+  {
+    id: 'mint-midi',
+    name: 'Mint Midi',
+    filePath: '/assets/dresses/mint-midi.png',
+    scaleFactor: 2.15,
+    yOffsetFactor: 0.12,
+    anchors,
+    torsoLengthRatio: 1.06,
+    minScale: 180,
+    maxScale: 540,
+  },
+];
