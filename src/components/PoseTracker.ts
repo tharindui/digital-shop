@@ -9,6 +9,29 @@ import type { PoseFrame } from '../types';
 const LOCAL_MODEL_PATH = '/models/pose_landmarker_lite.task';
 const WASM_PATH = '/wasm';
 
+async function validateLocalModelAsset(modelPath: string) {
+  const response = await fetch(modelPath, { cache: 'no-store' });
+
+  if (!response.ok) {
+    throw new Error(`MODEL_NOT_FOUND: Could not fetch ${modelPath} (HTTP ${response.status}).`);
+  }
+
+  const contentType = (response.headers.get('content-type') ?? '').toLowerCase();
+  if (contentType.includes('text/html')) {
+    throw new Error(`MODEL_ARCHIVE_INVALID: ${modelPath} returned HTML instead of a binary .task model.`);
+  }
+
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  const isZipArchive =
+    bytes.length > 4 && bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 0x03 && bytes[3] === 0x04;
+
+  if (!isZipArchive) {
+    throw new Error(
+      `MODEL_ARCHIVE_INVALID: ${modelPath} is not a valid .task zip archive. Ensure this is a binary MediaPipe .task file.`,
+    );
+  }
+}
+
 export class PoseTracker {
   private static instance: Promise<PoseTracker> | null = null;
 
@@ -18,6 +41,7 @@ export class PoseTracker {
     if (!PoseTracker.instance) {
       PoseTracker.instance = (async () => {
         const resolver = await FilesetResolver.forVisionTasks(WASM_PATH);
+        await validateLocalModelAsset(LOCAL_MODEL_PATH);
 
         try {
           const gpuLandmarker = await PoseLandmarker.createFromOptions(resolver, {
@@ -70,5 +94,6 @@ export class PoseTracker {
 
   close() {
     this.landmarker.close();
+    PoseTracker.instance = null;
   }
 }

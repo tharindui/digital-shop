@@ -155,6 +155,7 @@ body {
 
 .error-banner p {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .error-banner button {
@@ -164,4 +165,8 @@ body {
   border-radius: 8px;
   padding: 0.35rem 0.6rem;
   cursor: pointer;
+}
+
+.error-banner + .error-banner {
+  margin-top: 0.5rem;
 }

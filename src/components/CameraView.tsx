@@ -31,15 +31,35 @@ function toCameraError(error: unknown): string {
   return 'Unable to start camera.';
 }
 
-function toPoseError(error: unknown): string {
+function normalizeErrorText(error: unknown): string {
   if (error instanceof Error) {
-    if (error.message.includes('pose_landmarker_lite.task')) {
-      return 'Pose model missing: place /public/models/pose_landmarker_lite.task.';
-    }
-    return `Pose init failed: ${error.message}`;
+    return `${error.name}: ${error.message}`;
   }
 
-  return 'Pose tracking unavailable.';
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}
+
+function toPoseError(error: unknown): string {
+  const detail = normalizeErrorText(error);
+  const lowerDetail = detail.toLowerCase();
+
+  if (detail.includes('MODEL_NOT_FOUND') || detail.includes('pose_landmarker_lite.task')) {
+    return 'Pose model missing: place /public/models/pose_landmarker_lite.task.';
+  }
+
+  if (detail.includes('MODEL_ARCHIVE_INVALID') || lowerDetail.includes('unable to open zip archive')) {
+    return 'Pose model file is invalid. Replace with a valid binary pose_landmarker_lite.task file, then retry pose.';
+  }
+
+  return `Pose init failed: ${detail}`;
 }
 
 export default function CameraView({ selectedDress, selectedSize, debug }: Props) {
@@ -58,7 +78,9 @@ export default function CameraView({ selectedDress, selectedSize, debug }: Props
   const [cameraStatus, setCameraStatus] = useState('Initializing camera...');
   const [poseStatus, setPoseStatus] = useState('Initializing pose tracker...');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [poseErrorMessage, setPoseErrorMessage] = useState<string | null>(null);
   const [runKey, setRunKey] = useState(0);
+  const [poseRunKey, setPoseRunKey] = useState(0);
   const [tracking, setTracking] = useState<TrackingState>({
     hasPerson: false,
     confidence: 0,
@@ -87,9 +109,32 @@ export default function CameraView({ selectedDress, selectedSize, debug }: Props
     trackerRef.current = null;
   }, []);
 
+  const startPoseTracking = useCallback(async () => {
+    if (!streamRef.current) {
+      return;
+    }
+
+    try {
+      setPoseStatus('Loading pose model...');
+      setPoseErrorMessage(null);
+      const tracker = await PoseTracker.create();
+      if (!mountedRef.current) {
+        tracker.close();
+        return;
+      }
+
+      trackerRef.current = tracker;
+      setPoseStatus('Pose tracking ready');
+    } catch (error) {
+      setPoseStatus('Pose tracking unavailable');
+      setPoseErrorMessage(toPoseError(error));
+    }
+  }, []);
+
   const startSession = useCallback(async () => {
     stopSession();
     setErrorMessage(null);
+    setPoseErrorMessage(null);
     setPose(null);
     setTracking({ hasPerson: false, confidence: 0, stableConfidence: 0 });
 
@@ -139,28 +184,13 @@ export default function CameraView({ selectedDress, selectedSize, debug }: Props
       return;
     }
 
-    try {
-      setPoseStatus('Loading pose model...');
-      const tracker = await PoseTracker.create();
-      if (!mountedRef.current) {
-        tracker.close();
-        return;
-      }
-      trackerRef.current = tracker;
-      setPoseStatus('Pose tracking ready');
-    } catch (error) {
-      setPoseStatus('Pose tracking unavailable');
-      setErrorMessage(toPoseError(error));
-      return;
-    }
-
     const loop = async () => {
-      if (!mountedRef.current || !videoRef.current || !canvasRef.current || !trackerRef.current) {
+      if (!mountedRef.current || !videoRef.current || !canvasRef.current) {
         return;
       }
 
       const timestamp = performance.now();
-      const framePose = trackerRef.current.detect(videoRef.current, timestamp);
+      const framePose = trackerRef.current?.detect(videoRef.current, timestamp) ?? null;
       const ctx = canvasRef.current.getContext('2d');
 
       if (ctx) {
@@ -200,7 +230,8 @@ export default function CameraView({ selectedDress, selectedSize, debug }: Props
     };
 
     animationRef.current = requestAnimationFrame(loop);
-  }, [stopSession]);
+    void startPoseTracking();
+  }, [startPoseTracking, stopSession]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -211,6 +242,14 @@ export default function CameraView({ selectedDress, selectedSize, debug }: Props
       stopSession();
     };
   }, [runKey, startSession, stopSession]);
+
+  useEffect(() => {
+    if (!streamRef.current) {
+      return;
+    }
+
+    void startPoseTracking();
+  }, [poseRunKey, startPoseTracking]);
 
   const idle = !tracking.hasPerson && Date.now() - lastSeenRef.current > IDLE_TIMEOUT_MS;
 
@@ -227,6 +266,15 @@ export default function CameraView({ selectedDress, selectedSize, debug }: Props
           <p>{errorMessage}</p>
           <button type="button" onClick={() => setRunKey((v) => v + 1)}>
             Retry camera
+          </button>
+        </div>
+      )}
+
+      {poseErrorMessage && (
+        <div className="error-banner">
+          <p>{poseErrorMessage}</p>
+          <button type="button" onClick={() => setPoseRunKey((v) => v + 1)}>
+            Retry pose
           </button>
         </div>
       )}
