@@ -1,0 +1,171 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background: #0b1020;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #1a2342, #0b1020 55%);
+  color: #f3f4f6;
+}
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.catalog {
+  background: rgba(13, 20, 38, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.catalog h2 {
+  margin-top: 0;
+}
+
+.dress-list {
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.dress-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.dress-card.active {
+  border-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.2);
+}
+
+.dress-card img {
+  width: 56px;
+  height: 72px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.8rem;
+}
+
+.checkbox-row {
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.status-bar span {
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+}
+
+.canvas-wrap {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #01040f;
+  aspect-ratio: 16 / 9;
+}
+
+.hidden-video {
+  display: none;
+}
+
+.mirror-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.idle-banner {
+  position: absolute;
+  inset: auto 1rem 1rem 1rem;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  border-radius: 10px;
+  background: rgba(11, 16, 32, 0.8);
+}
+
+.fit-panel {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.9rem 1rem;
+}
+
+.note {
+  opacity: 0.75;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.error-banner {
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  background: rgba(127, 29, 29, 0.35);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.error-banner p {
+  margin: 0;
+}
+
+.error-banner button {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.error-banner + .error-banner {
+  margin-top: 0.5rem;
+}
