@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Fitting Room MVP</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>Digital Fitting Room MVP</h1>
+        <p>Upload a photo and preview basic garment overlays.</p>
+      </header>
+
+      <section class="controls">
+        <label>
+          Model photo
+          <input id="photoInput" type="file" accept="image/*" />
+        </label>
+
+        <label>
+          Garment
+          <select id="garmentSelect"></select>
+        </label>
+
+        <label>
+          Scale
+          <input id="scaleInput" type="range" min="0.4" max="2" step="0.01" value="1" />
+        </label>
+
+        <label>
+          Vertical position
+          <input id="yOffsetInput" type="range" min="-120" max="120" step="1" value="0" />
+        </label>
+
+        <button id="downloadBtn" type="button">Download preview</button>
+      </section>
+
+      <section class="preview">
+        <canvas id="fittingCanvas" width="720" height="900"></canvas>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

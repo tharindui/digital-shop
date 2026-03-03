@@ -1,0 +1,86 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: #f7f8fc;
+  color: #1a1f36;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.25rem;
+  min-height: 100vh;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+header {
+  grid-column: 1 / -1;
+}
+
+header h1 {
+  margin: 0 0 0.3rem;
+}
+
+header p {
+  margin: 0;
+  color: #4b5675;
+}
+
+.controls {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 12px 30px rgba(31, 45, 61, 0.08);
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+}
+
+label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+button {
+  background: #2859e3;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 0.8rem;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.preview {
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.9rem;
+  box-shadow: 0 12px 30px rgba(31, 45, 61, 0.08);
+  display: grid;
+  place-items: center;
+}
+
+canvas {
+  width: min(100%, 580px);
+  aspect-ratio: 4 / 5;
+  height: auto;
+  border-radius: 12px;
+  background: #f2f4fb;
+}
+
+@media (max-width: 920px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+}
