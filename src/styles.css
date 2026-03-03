@@ -140,3 +140,28 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+
+.error-banner {
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  background: rgba(127, 29, 29, 0.35);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.error-banner p {
+  margin: 0;
+}
+
+.error-banner button {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}

@@ -18,16 +18,32 @@ export class PoseTracker {
     if (!PoseTracker.instance) {
       PoseTracker.instance = (async () => {
         const resolver = await FilesetResolver.forVisionTasks(WASM_PATH);
-        const poseLandmarker = await PoseLandmarker.createFromOptions(resolver, {
-          baseOptions: {
-            modelAssetPath: LOCAL_MODEL_PATH,
-            delegate: 'GPU',
-          },
-          runningMode: 'VIDEO',
-          numPoses: 1,
-        });
-        return new PoseTracker(poseLandmarker);
-      })();
+
+        try {
+          const gpuLandmarker = await PoseLandmarker.createFromOptions(resolver, {
+            baseOptions: {
+              modelAssetPath: LOCAL_MODEL_PATH,
+              delegate: 'GPU',
+            },
+            runningMode: 'VIDEO',
+            numPoses: 1,
+          });
+          return new PoseTracker(gpuLandmarker);
+        } catch {
+          const cpuLandmarker = await PoseLandmarker.createFromOptions(resolver, {
+            baseOptions: {
+              modelAssetPath: LOCAL_MODEL_PATH,
+              delegate: 'CPU',
+            },
+            runningMode: 'VIDEO',
+            numPoses: 1,
+          });
+          return new PoseTracker(cpuLandmarker);
+        }
+      })().catch((error) => {
+        PoseTracker.instance = null;
+        throw error;
+      });
     }
 
     return PoseTracker.instance;

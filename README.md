@@ -61,6 +61,17 @@ Open the local URL from Vite (usually `http://localhost:5173`).
 - Dress PNG assets are generated in `public/assets/dresses` during `postinstall` via `scripts/generate-dress-assets.mjs` to keep source control text-only.
 - Place `pose_landmarker_lite.task` at `public/models/pose_landmarker_lite.task`.
 
+
+## Camera troubleshooting
+
+If the camera does not open:
+
+- Use `http://localhost:5173` (or HTTPS). Browser camera APIs are blocked on insecure origins.
+- Click the camera icon in the browser address bar and set camera permission to **Allow**.
+- Close other apps that may lock the webcam (Zoom/Meet/Teams/OBS).
+- Ensure the model file exists at `public/models/pose_landmarker_lite.task`.
+- Use the **Retry camera** button shown in the app error banner after fixing permissions.
+
 ## Known limitations
 
 - This is a 2D overlay demo, not a physically accurate cloth simulation.
