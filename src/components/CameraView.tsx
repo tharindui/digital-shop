@@ -49,12 +49,13 @@ function normalizeErrorText(error: unknown): string {
 
 function toPoseError(error: unknown): string {
   const detail = normalizeErrorText(error);
+  const lowerDetail = detail.toLowerCase();
 
   if (detail.includes('MODEL_NOT_FOUND') || detail.includes('pose_landmarker_lite.task')) {
     return 'Pose model missing: place /public/models/pose_landmarker_lite.task.';
   }
 
-  if (detail.includes('MODEL_ARCHIVE_INVALID') || detail.includes('Unable to open zip archive')) {
+  if (detail.includes('MODEL_ARCHIVE_INVALID') || lowerDetail.includes('unable to open zip archive')) {
     return 'Pose model file is invalid. Replace with a valid binary pose_landmarker_lite.task file, then retry pose.';
   }
 

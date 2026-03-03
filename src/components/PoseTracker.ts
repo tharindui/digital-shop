@@ -16,6 +16,11 @@ async function validateLocalModelAsset(modelPath: string) {
     throw new Error(`MODEL_NOT_FOUND: Could not fetch ${modelPath} (HTTP ${response.status}).`);
   }
 
+  const contentType = (response.headers.get('content-type') ?? '').toLowerCase();
+  if (contentType.includes('text/html')) {
+    throw new Error(`MODEL_ARCHIVE_INVALID: ${modelPath} returned HTML instead of a binary .task model.`);
+  }
+
   const bytes = new Uint8Array(await response.arrayBuffer());
   const isZipArchive =
     bytes.length > 4 && bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 0x03 && bytes[3] === 0x04;

@@ -71,6 +71,7 @@ If the camera does not open:
 - Close other apps that may lock the webcam (Zoom/Meet/Teams/OBS).
 - Ensure the model file exists at `public/models/pose_landmarker_lite.task`.
 - If you see `Unable to open zip archive`, your model file is invalid/corrupted (often an HTML file saved as `.task`). Re-download and replace it with the real binary model file.
+- If the error banner contains a long stack trace, verify the model URL in browser: `http://localhost:5173/models/pose_landmarker_lite.task` should download binary data, not an HTML page.
 - Use the **Retry camera** button shown in the app error banner after fixing permissions.
 - Use **Retry pose** to reinitialize the pose model without restarting camera.
 
